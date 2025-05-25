@@ -1,8 +1,12 @@
 
 import { Router } from 'express';
-import { getAllReviews } from '../controllers/reviewController.js';
+import { addReview, getReviewsByOfferId } from '../controllers/reviewController.js';
+import { authenticateToken } from '../middleware/authMiddleware.js';
 
-const router = new Router();
-router.get('/reviews', getAllReviews);
+const router = Router();
+
+router.post('/:offerId', authenticateToken, addReview);
+router.get('/:offerId', getReviewsByOfferId);
 
 export default router;
+

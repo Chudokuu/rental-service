@@ -1,9 +1,13 @@
-import {Router} from 'express';
-
+import { Router } from 'express';
 import offerRouter from './offerRoutes.js';
-import userRotes  from './userRoutes.js';
+import userRoutes from './userRoutes.js';
+import reviewRouter from './reviewRoutes.js';
 
-const router = new Router();
+const router = Router();
+
 router.use('/', offerRouter);
-router.use('/', userRotes);
-export{router}
+router.use('/', userRoutes);
+router.use('/comments', reviewRouter);
+
+export { router };
+
