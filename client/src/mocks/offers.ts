@@ -1,0 +1,55 @@
+import { FullOffer } from '../types/offer';
+
+export const offers: FullOffer[] = [
+  {
+    id: 'bbb06a0e-3f92-446d-9a68-cb64b5d38e2b',
+    title: 'Уютная квартира в центре Парижа',
+    description: 'Светлая и современная квартира рядом с Лувром и Сенной. Отличный вариант для пары или небольшой семьи.',
+    type: 'apartment',
+    price: 200,
+    images: ['3-2.jpg','3-3.jpg','3-4.jpg','3-5.jpg'],
+    city: { name: 'Paris', location: { latitude: 48.85661, longitude: 2.351499, zoom: 13 } },
+    location: { latitude: 48.86861, longitude: 2.342499, zoom: 16 },
+    goods: ['Laptop friendly workspace','Towels','Breakfast'],
+    host: { isPro: true, name: 'Angelina', avatarUrl: 'avatar-angelina.jpg' },
+    isPremium: true,
+    isFavorite: true,
+    rating: 4.7,
+    bedrooms: 2,
+    maxAdults: 4
+  },
+  {
+    id: 'bbb06a0e-3f92-446d-9a68-cb64b5d38e3b',
+    title: 'Квартира с видом на Эйфелеву башню',
+    description: 'Роскошные апартаменты в самом сердце Парижа с панорамным видом.',
+    type: 'apartment',
+    price: 350,
+    images: ['4-2.jpg','4-3.jpg','4-4.jpg'],
+    city: { name: 'Paris', location: { latitude: 48.85661, longitude: 2.351499, zoom: 13 } },
+    location: { latitude: 48.8584, longitude: 2.2945, zoom: 16 },
+    goods: ['Air conditioning','Fridge','Washer'],
+    host: { isPro: true, name: 'Angelina', avatarUrl: 'avatar-angelina.jpg' },
+    isPremium: true,
+    isFavorite: true,
+    rating: 4.9,
+    bedrooms: 3,
+    maxAdults: 5
+  },
+  {
+    id: 'bbb06a0e-3f92-446d-9a68-cb64b5d38e4b',
+    title: 'Апартаменты в старом городе',
+    description: 'Квартира с традиционным интерьером и видом на собор.',
+    type: 'apartment',
+    price: 260,
+    images: ['5-2.jpg','5-3.jpg','5-4.jpg','5-5.jpg','5-6.jpg','5-7.jpg'],
+    city: { name: 'Paris', location: { latitude: 48.85661, longitude: 2.351499, zoom: 13 } },
+    location: { latitude: 48.8544, longitude: 2.2965, zoom: 16 },
+    goods: ['Air conditioning','Fridge','Washer'],
+    host: { isPro: true, name: 'Angelina', avatarUrl: 'avatar-angelina.jpg' },
+    isPremium: false,
+    isFavorite: true,
+    rating: 4.6,
+    bedrooms: 2,
+    maxAdults: 4
+  },
+];
