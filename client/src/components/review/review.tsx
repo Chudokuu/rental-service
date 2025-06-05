@@ -7,7 +7,6 @@ type ReviewProps = {
 
 export function Review({ review }: ReviewProps): React.JSX.Element {
   const { user, rating, comment, date } = review;
-  // Форматируем дату в более человекочитаемый вид (например, "April 2023")
   const reviewDate = new Date(date).toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',

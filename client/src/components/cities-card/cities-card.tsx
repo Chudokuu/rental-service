@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 
@@ -10,23 +10,39 @@ type CitiesCardProps = {
   isPremium: boolean;
   previewImage: string;
   rating: number;
+  onListItemHover?: (offerId: string | null) => void;
 };
 
-export function CitiesCard({ id, title, type, price, previewImage, isPremium, rating }: CitiesCardProps) {
-  const [, setActiveId] = useState('');
-
+export function CitiesCard({
+  id,
+  title,
+  type,
+  price,
+  previewImage,
+  isPremium,
+  rating,
+  onListItemHover,
+}: CitiesCardProps) {
   return (
     <article
       className="cities__card place-card"
-      onMouseOver={() => setActiveId(id)}
-      onMouseOut={() => setActiveId('')}
+      onMouseOver={() => onListItemHover && onListItemHover(id)}
+      onMouseOut={() => onListItemHover && onListItemHover(null)}
     >
       {isPremium && (
-        <div className="place-card__mark"><span>Premium</span></div>
+        <div className="place-card__mark">
+          <span>Premium</span>
+        </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
         <Link to={AppRoute.Offer.replace(':id', id)}>
-          <img className="place-card__image" src={`/img/${previewImage}`} width="260" height="200" alt={title} />
+          <img
+            className="place-card__image"
+            src={`/img/${previewImage}`}
+            width="260"
+            height="200"
+            alt={title}
+          />
         </Link>
       </div>
       <div className="place-card__info">
@@ -48,7 +64,9 @@ export function CitiesCard({ id, title, type, price, previewImage, isPremium, ra
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
-        <h2 className="place-card__name"><Link to="#">{title}</Link></h2>
+        <h2 className="place-card__name">
+          <Link to="#">{title}</Link>
+        </h2>
         <p className="place-card__type">{type}</p>
       </div>
     </article>

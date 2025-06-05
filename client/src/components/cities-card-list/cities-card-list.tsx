@@ -4,11 +4,15 @@ import { CitiesCard } from '../cities-card/cities-card';
 
 type CitiesCardListProps = {
   offersList: OffersList[];
+  onListItemHover?: (offerId: string | null) => void;
 };
 
-export function CitiesCardList({ offersList }: CitiesCardListProps) {
+export function CitiesCardList({
+  offersList,
+  onListItemHover,
+}: CitiesCardListProps) {
   return (
-    <div className="cities__places-list places__list tabs__content">
+    <div className="cities__places-list places__list">
       {offersList.map((item) => (
         <CitiesCard
           key={item.id}
@@ -19,6 +23,7 @@ export function CitiesCardList({ offersList }: CitiesCardListProps) {
           previewImage={item.previewImage}
           isPremium={item.isPremium}
           rating={item.rating}
+          onListItemHover={onListItemHover}
         />
       ))}
     </div>

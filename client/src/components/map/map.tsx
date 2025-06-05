@@ -1,7 +1,5 @@
-// client/src/components/map/map.tsx
-
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, CircleMarker } from 'react-leaflet';
 import type { LatLngExpression, IconOptions } from 'leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -11,11 +9,13 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+
 type MapProps = {
   offers?: OffersList[];
   fullOffers?: FullOffer[];
   center?: LatLngExpression;
   zoom?: number;
+  hoveredLocation?: [number, number] | null;
 };
 
 const defaultZoom = 13;
@@ -23,7 +23,6 @@ const defaultZoom = 13;
 type IconDefaultPrototype = {
   _getIconUrl?: () => void;
 };
-
 const iconDefaultProto = L.Icon.Default.prototype as IconDefaultPrototype;
 delete iconDefaultProto._getIconUrl;
 
@@ -38,25 +37,16 @@ export function Map({
   fullOffers,
   center,
   zoom = defaultZoom,
+  hoveredLocation = null,
 }: MapProps): React.JSX.Element {
-  // Отложенный рендер MapContainer, чтобы избежать двойной инициализации в StrictMode
   const [mapReady, setMapReady] = useState(false);
+
   useEffect(() => {
     setMapReady(true);
   }, []);
 
-  const markers: LatLngExpression[] = [];
-
-  if (offers) {
-    offers.forEach((item) => {
-      markers.push([item.location.latitude, item.location.longitude]);
-    });
-  }
-
-  if (fullOffers) {
-    fullOffers.forEach((item) => {
-      markers.push([item.location.latitude, item.location.longitude]);
-    });
+  if (!mapReady) {
+    return <div style={{ width: '100%', height: '100%' }} />;
   }
 
   let mapCenter: LatLngExpression = [52.370216, 4.895168];
@@ -74,19 +64,59 @@ export function Map({
     ];
   }
 
-  if (!mapReady) {
-    return <div style={{ width: '100%', height: '100%' }} />;
-  }
+  const mapKey = `${Array.isArray(mapCenter) ? mapCenter.join('-') : ''}-${zoom}`;
 
   return (
-    <MapContainer center={mapCenter} zoom={zoom} style={{ width: '100%', height: '100%' }}>
+    <MapContainer
+      key={mapKey}
+      center={mapCenter}
+      zoom={zoom}
+      style={{ width: '100%', height: '100%' }}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {markers.map((position, index) => (
-        <Marker key={index} position={position} />
-      ))}
+
+      {offers &&
+        offers.map((item, index) => {
+          const position: LatLngExpression = [item.location.latitude, item.location.longitude];
+          const isHovered =
+            hoveredLocation !== null &&
+            hoveredLocation[0] === item.location.latitude &&
+            hoveredLocation[1] === item.location.longitude;
+
+          return isHovered ? (
+            <CircleMarker
+              key={`hovered-${index}`}
+              center={position}
+              radius={10}
+              pathOptions={{ color: 'orange', fillColor: 'orange', fillOpacity: 0.5 }}
+            />
+          ) : (
+            <Marker key={`marker-${index}`} position={position} />
+          );
+        })}
+
+      {fullOffers &&
+        fullOffers.map((item, index) => {
+          const position: LatLngExpression = [item.location.latitude, item.location.longitude];
+          const isHovered =
+            hoveredLocation !== null &&
+            hoveredLocation[0] === item.location.latitude &&
+            hoveredLocation[1] === item.location.longitude;
+
+          return isHovered ? (
+            <CircleMarker
+              key={`hovered-full-${index}`}
+              center={position}
+              radius={10}
+              pathOptions={{ color: 'orange', fillColor: 'orange', fillOpacity: 0.5 }}
+            />
+          ) : (
+            <Marker key={`full-${index}`} position={position} />
+          );
+        })}
     </MapContainer>
   );
 }
