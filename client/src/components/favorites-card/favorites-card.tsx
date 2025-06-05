@@ -23,7 +23,7 @@ export function FavoritesCard({ offer }: FavoritesCardProps) {
         <Link to={`${AppRoute.Offer}/${id}`}>
           <img
             className="place-card__image"
-            src={`img/${previewImage}`}
+            src={`/img/${previewImage}`}
             width="150"
             height="110"
             alt={title}

@@ -1,9 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { FullOffer } from '../../types/offer';
+import { FullOffer, OffersList } from '../../types/offer';
 import { Logo } from '../../components/logo/logo';
 import { NotFoundPage } from '../not-found-page/not-found-page';
 import { CommentsForm } from '../../components/comments-form/comments-form';
+import { ReviewsList } from '../../components/reviews-list/reviews-list';
+import { reviews } from '../../mocks/reviews';
+import { Map } from '../../components/map/map';
+import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
+
 export type OfferPageProps = {
   offers: FullOffer[];
 };
@@ -15,6 +20,28 @@ export function OfferPage({ offers }: OfferPageProps) {
   if (!offer) {
     return <NotFoundPage />;
   }
+
+  // Находим 3 ближайших предложения (просто берём первые 3, отличные от текущего)
+  const nearbyFullOffers = offers
+    .filter((item) => item.id !== id)
+    .slice(0, 3);
+
+  // Преобразуем FullOffer -> OffersList, чтобы использовать CitiesCardList
+  const nearbyOffersList: OffersList[] = nearbyFullOffers.map((fo) => ({
+    id: fo.id,
+    title: fo.title,
+    type: fo.type,
+    price: fo.price,
+    previewImage: fo.images[0],
+    city: fo.city,
+    location: fo.location,
+    isPremium: fo.isPremium,
+    isFavorite: fo.isFavorite,
+    rating: fo.rating,
+  }));
+
+  // Центр для карты страницы предложения — координаты текущего места
+  const offerCenter: [number, number] = [offer.location.latitude, offer.location.longitude];
 
   return (
     <div className="page">
@@ -30,7 +57,9 @@ export function OfferPage({ offers }: OfferPageProps) {
                   <a className="header__nav-link header__nav-link--profile" href="#">
                     <div className="header__avatar-wrapper user__avatar-wrapper"></div>
                     <span className="header__user-name user__name">Myemail@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
+                    <span className="header__favorite-count">
+                      {offers.filter((o) => o.isFavorite).length}
+                    </span>
                   </a>
                 </li>
                 <li className="header__nav-item">
@@ -46,19 +75,17 @@ export function OfferPage({ offers }: OfferPageProps) {
 
       <main className="page__main page__main--offer">
         <section className="offer">
+          {/* Галерея изображений */}
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
               {offer.images.map((item) => (
                 <div key={item} className="offer__image-wrapper">
-                  <img
-                    className="offer__image"
-                    src={`/img/${item}`}
-                    alt="Photo studio"
-                  />
+                  <img className="offer__image" src={`/img/${item}`} alt="Photo studio" />
                 </div>
               ))}
             </div>
           </div>
+
           <div className="offer__container container">
             <div className="offer__wrapper">
               {offer.isPremium && (
@@ -85,7 +112,7 @@ export function OfferPage({ offers }: OfferPageProps) {
                 <span className="offer__rating-value rating__value">{offer.rating}</span>
               </div>
               <ul className="offer__features">
-                <li className={`offer__feature offer__feature--${offer.type}`}>                
+                <li className={`offer__feature offer__feature--${offer.type}`}>
                   {offer.type.charAt(0).toUpperCase() + offer.type.slice(1)}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
@@ -126,28 +153,34 @@ export function OfferPage({ offers }: OfferPageProps) {
                     />
                   </div>
                   <span className="offer__user-name">{offer.host.name}</span>
-                  {offer.host.isPro && (
-                    <span className="offer__user-status">Pro</span>
-                  )}
+                  {offer.host.isPro && <span className="offer__user-status">Pro</span>}
                 </div>
               </div>
-              <div className="offer__location-info">
-                <p className="offer__city">
-                  City: {offer.city.name}
-                </p>
-                <p className="offer__coords">
-                  Coordinates: {offer.location.latitude}, {offer.location.longitude}
-                </p>
-              </div>
-              <section className="offer__reviews reviews">
-                <h2 className="reviews__title">
-                  Reviews&nbsp;·&nbsp;<span className="reviews__amount">0</span>
-                </h2>
-                <CommentsForm />
-              </section>
+
+              {/* Разметка отзывов (список) */}
+              <ReviewsList reviews={reviews} />
+
+              {/* Форма добавления отзыва */}
+              <CommentsForm />
             </div>
           </div>
         </section>
+
+        {/* Карта для данной страницы */}
+        <section className="offer__map map" style={{ width: '100%', height: '450px' }}>
+          <Map fullOffers={nearbyFullOffers} center={offerCenter} zoom={13} />
+        </section>
+
+        {/* Блок «Other places in the neighbourhood» */}
+        <div className="container">
+          <section className="near-places places">
+            <h2 className="near-places__title">Other places in the neighbourhood</h2>
+            <div className="near-places__list places__list">
+              {/* Используем CitiesCardList для рендеринга nearbyOffersList */}
+              <CitiesCardList offersList={nearbyOffersList} />
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   );

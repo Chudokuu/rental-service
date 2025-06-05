@@ -26,7 +26,7 @@ export function CitiesCard({ id, title, type, price, previewImage, isPremium, ra
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
         <Link to={AppRoute.Offer.replace(':id', id)}>
-          <img className="place-card__image" src={`img/${previewImage}`} width="260" height="200" alt={title} />
+          <img className="place-card__image" src={`/img/${previewImage}`} width="260" height="200" alt={title} />
         </Link>
       </div>
       <div className="place-card__info">

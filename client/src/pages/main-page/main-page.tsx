@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Logo } from '../../components/logo/logo';
 import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
 import { OffersList } from '../../types/offer';
+import { Map } from '../../components/map/map';
 
 type MainPageProps = {
   rentalOffersCount: number;
@@ -10,19 +11,25 @@ type MainPageProps = {
 };
 
 export function MainPage({ rentalOffersCount, offersList }: MainPageProps) {
+  // Берём центр города из первого предложения (все предложения — Амстердам)
+  const cityCenter = [offersList[0].city.location.latitude, offersList[0].city.location.longitude] as [number, number];
+
   return (
     <div className="page page--gray page--main">
-      <Helmet><title>Шесть городов</title></Helmet>
+      <Helmet>
+        <title>Шесть городов</title>
+      </Helmet>
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
-            <div className="header__left"><Logo /></div>
+            <div className="header__left">
+              <Logo />
+            </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
                 <li className="header__nav-item user">
                   <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
+                    <div className="header__avatar-wrapper user__avatar-wrapper"></div>
                     <span className="header__user-name user__name">Myemail@gmail.com</span>
                     <span className="header__favorite-count">3</span>
                   </a>
@@ -90,15 +97,28 @@ export function MainPage({ rentalOffersCount, offersList }: MainPageProps) {
                   </svg>
                 </span>
                 <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
+                  <li className="places__option places__option--active" tabIndex={0}>
+                    Popular
+                  </li>
+                  <li className="places__option" tabIndex={0}>
+                    Price: low to high
+                  </li>
+                  <li className="places__option" tabIndex={0}>
+                    Price: high to low
+                  </li>
+                  <li className="places__option" tabIndex={0}>
+                    Top rated first
+                  </li>
                 </ul>
               </form>
               <CitiesCardList offersList={offersList} />
             </section>
-            <div className="cities__right-section"><section className="cities__map map" /></div>
+            <div className="cities__right-section">
+              <section className="cities__map map" style={{ width: '100%', height: '100%' }}>
+                {/* Здесь рендерим карту */}
+                <Map offers={offersList} center={cityCenter} zoom={13} />
+              </section>
+            </div>
           </div>
         </div>
       </main>
